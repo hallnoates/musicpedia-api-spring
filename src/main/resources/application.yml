@@ -1,0 +1,24 @@
+spring:
+  jackson:
+    deserialization:
+      fail-on-unknown-properties: true
+  datasource:
+    username: root
+    password: dbalWkd123
+    url: jdbc:mysql://127.0.0.1:3306/musicpedia
+    driverClassName: com.mysql.cj.jdbc.Driver
+  jpa:
+    hibernate:
+      ddl-auto: create-drop
+      format_sql: true
+      jdbc:
+        lob:
+          non-contextual-creation: true
+  logging:
+    level:
+      org:
+        springframework:
+          security: DEBUG
+        hibernate:
+          SQL: DEBUG
+          type: trace
