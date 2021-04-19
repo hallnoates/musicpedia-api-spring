@@ -1,20 +1,51 @@
 package org.mozza.musicpediaapi.user.controller;
 
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.mozza.musicpediaapi.user.domain.LoginType;
+import org.mozza.musicpediaapi.user.domain.User;
 import org.mozza.musicpediaapi.user.dto.LoginDto;
-import org.mozza.musicpediaapi.user.dto.SignupDto;
+import org.mozza.musicpediaapi.user.dto.SignUpDto;
+import org.mozza.musicpediaapi.user.repository.UserRepository;
+import org.mozza.musicpediaapi.user.service.UserService;
+import org.mozza.musicpediaapi.user.validation.SignUpValidator;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.WebDataBinder;
+import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 
 
 @RestController
+@RequiredArgsConstructor
+@Slf4j
 public class LoginController {
 
-    @PostMapping("/signup")
-    public ResponseEntity signup(@RequestBody @Valid SignupDto signupDto) {
+    private final SignUpValidator signUpValidator;
+    private final UserRepository userRepository;
+    private final UserService userService;
+
+    @InitBinder("SignupDto")
+    public void initBinder(WebDataBinder binder) {
+        log.info("signupDto에만 적용되는 validation");
+        binder.addValidators(signUpValidator);
+    }
+
+    @GetMapping("/sign-up/check-email")
+    public ResponseEntity checkEmail(@RequestParam String email) {
+        return ResponseEntity.ok().body(userRepository.existsByEmail(email));
+    }
+
+    @GetMapping("/sign-up/check-nickname")
+    public ResponseEntity checkNickname(@RequestParam String nickname) {
+        return ResponseEntity.ok().body(userRepository.existsByNickname(nickname));
+    }
+
+    @PostMapping("/sign-up/{loginType}")
+    public ResponseEntity signup(@PathVariable LoginType loginType, @RequestBody @Valid SignUpDto signupDto) {
+
+        User user = userService.signUp(loginType, signupDto);
         return ResponseEntity.ok().build();
     }
 

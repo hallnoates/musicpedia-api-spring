@@ -10,7 +10,7 @@ import javax.validation.constraints.NotBlank;
 @Data @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class SignupDto {
+public class SignUpDto {
 
     @NotBlank
     private String email;
