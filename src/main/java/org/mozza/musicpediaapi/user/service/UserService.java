@@ -16,10 +16,11 @@ public class UserService {
 
     private final UserRepository userRepository;
 
-    public User signUp(LoginType loginType, SignUpDto signupDto) {
+    public User signUp(SignUpDto signupDto) {
         Optional<User> byEmail = userRepository.findByEmail(signupDto.getEmail());
         if (byEmail.isEmpty()) {
-            return null;
+            // 중복이면 여기서 에러를 발생시켜서 처리하기
+            return new User();
         }
         return null;
     }

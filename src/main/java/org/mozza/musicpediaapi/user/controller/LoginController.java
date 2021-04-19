@@ -44,8 +44,8 @@ public class LoginController {
 
     @PostMapping("/sign-up/{loginType}")
     public ResponseEntity signup(@PathVariable LoginType loginType, @RequestBody @Valid SignUpDto signupDto) {
-
-        User user = userService.signUp(loginType, signupDto);
+        signupDto.setLoginType(loginType);
+        User user = userService.signUp(signupDto);
         return ResponseEntity.ok().build();
     }
 
