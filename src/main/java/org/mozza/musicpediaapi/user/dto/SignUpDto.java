@@ -16,11 +16,9 @@ public class SignUpDto {
     @NotBlank
     private String email;
     @NotBlank
-    private String password;
-    @NotBlank
     private String nickname;
-    @NotBlank
+
+    private String password;
     private String name;
-    @NotBlank
     private LoginType loginType;
 }

@@ -11,9 +11,11 @@ import org.mozza.musicpediaapi.user.service.UserService;
 import org.mozza.musicpediaapi.user.validation.SignUpValidator;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.Errors;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
 
+import javax.persistence.Enumerated;
 import javax.validation.Valid;
 
 
@@ -26,9 +28,8 @@ public class LoginController {
     private final UserRepository userRepository;
     private final UserService userService;
 
-    @InitBinder("SignupDto")
+    @InitBinder
     public void initBinder(WebDataBinder binder) {
-        log.info("signupDto에만 적용되는 validation");
         binder.addValidators(signUpValidator);
     }
 
@@ -43,10 +44,11 @@ public class LoginController {
     }
 
     @PostMapping("/sign-up/{loginType}")
-    public ResponseEntity signup(@PathVariable LoginType loginType, @RequestBody @Valid SignUpDto signupDto) {
+    public ResponseEntity signup(@PathVariable LoginType loginType, @RequestBody @Valid SignUpDto signupDto, Errors errors) {
+        log.info("loginType "+loginType);
         signupDto.setLoginType(loginType);
         User user = userService.signUp(signupDto);
-        return ResponseEntity.ok().build();
+        return ResponseEntity.ok().body(user);
     }
 
     @PostMapping("/login")
