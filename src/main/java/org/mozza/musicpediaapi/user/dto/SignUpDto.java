@@ -6,6 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.mozza.musicpediaapi.user.domain.LoginType;
 
+import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 
 @Data @Builder
@@ -13,6 +14,7 @@ import javax.validation.constraints.NotBlank;
 @NoArgsConstructor
 public class SignUpDto {
 
+    @Email
     @NotBlank
     private String email;
     @NotBlank
