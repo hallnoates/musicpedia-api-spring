@@ -36,6 +36,7 @@ public class LoginController {
 
     @GetMapping("/sign-up/check-email")
     public ResponseEntity<ResponseObject> checkEmail(@RequestParam @Email @NotBlank String email) {
+
         return ResponseEntity.ok().body(ResponseObject.of(200,userRepository.existsByEmail(email)));
     }
 
