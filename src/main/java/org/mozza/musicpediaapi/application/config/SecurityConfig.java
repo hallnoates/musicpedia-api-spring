@@ -6,7 +6,6 @@ import org.mozza.musicpediaapi.application.jwt.JwtAuthenticationEntryPoint;
 import org.mozza.musicpediaapi.application.jwt.JwtSecurityConfig;
 import org.mozza.musicpediaapi.application.jwt.TokenProvider;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
@@ -15,7 +14,6 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 @EnableWebSecurity
-@Configuration
 @RequiredArgsConstructor
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
@@ -31,6 +29,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http
+                // security에서 기본적으로 생성하는 login 페이지 비활성화
+                .httpBasic().disable()
+
+                // rest API
                 .csrf().disable()
 
                 .exceptionHandling()

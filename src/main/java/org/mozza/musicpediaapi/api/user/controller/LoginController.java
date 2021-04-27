@@ -5,7 +5,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.mozza.musicpediaapi.api.user.domain.User;
 import org.mozza.musicpediaapi.api.user.dto.LoginDto;
 import org.mozza.musicpediaapi.api.user.dto.SignUpDto;
+import org.mozza.musicpediaapi.api.user.dto.TokenDto;
 import org.mozza.musicpediaapi.api.user.repository.UserRepository;
+import org.mozza.musicpediaapi.api.user.service.CustomUserDetailsService;
 import org.mozza.musicpediaapi.api.user.service.UserService;
 import org.mozza.musicpediaapi.api.user.validation.SignUpValidator;
 import org.mozza.musicpediaapi.common.ResponseObject;
@@ -28,6 +30,7 @@ public class LoginController {
     private final SignUpValidator signUpValidator;
     private final UserRepository userRepository;
     private final UserService userService;
+    private final CustomUserDetailsService customUserDetailsService;
 
     @InitBinder
     public void initBinder(WebDataBinder binder) {
@@ -52,7 +55,9 @@ public class LoginController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity login(@RequestBody @Valid LoginDto loginDto) {
+    public ResponseEntity<TokenDto> login(@RequestBody @Valid LoginDto loginDto) {
+
         return ResponseEntity.ok().build();
     }
+
 }
