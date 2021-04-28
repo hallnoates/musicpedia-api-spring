@@ -13,6 +13,13 @@ public class ResponseObject {
     private Object data;
     private String message;
 
+    public static ResponseObject fail(Object data) {
+        return of(400, data, "FAIL");
+    }
+
+    public static ResponseObject ok(Object data) {
+        return of(200, data, "SUCCESS");
+    }
     public static ResponseObject of(int code) {
         return of(code, null, null);
     }

@@ -7,13 +7,14 @@ import org.mozza.musicpediaapi.api.user.dto.LoginDto;
 import org.mozza.musicpediaapi.api.user.dto.SignUpDto;
 import org.mozza.musicpediaapi.api.user.dto.TokenDto;
 import org.mozza.musicpediaapi.api.user.repository.UserRepository;
-import org.mozza.musicpediaapi.api.user.service.CustomUserDetailsService;
 import org.mozza.musicpediaapi.api.user.service.UserService;
 import org.mozza.musicpediaapi.api.user.validation.SignUpValidator;
+import org.mozza.musicpediaapi.application.jwt.JwtFilter;
 import org.mozza.musicpediaapi.common.ResponseObject;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.Errors;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -30,12 +31,6 @@ public class LoginController {
     private final SignUpValidator signUpValidator;
     private final UserRepository userRepository;
     private final UserService userService;
-    private final CustomUserDetailsService customUserDetailsService;
-
-    @InitBinder
-    public void initBinder(WebDataBinder binder) {
-        binder.addValidators(signUpValidator);
-    }
 
     @GetMapping("/sign-up/check-email")
     public ResponseEntity<ResponseObject> checkEmail(@RequestParam @Email @NotBlank String email) {
@@ -49,15 +44,28 @@ public class LoginController {
     }
 
     @PostMapping("/sign-up")
-    public ResponseEntity<ResponseObject> signup(@RequestBody @Valid SignUpDto signupDto) {
+    public ResponseEntity<ResponseObject> signup(@RequestBody @Valid SignUpDto signupDto, Errors errors) {
+        if (errors.hasErrors()){
+            return ResponseEntity.badRequest().body(ResponseObject.fail(errors));
+        }
+
+        signUpValidator.validate(signupDto, errors);
+        if (errors.hasErrors()) {
+            return ResponseEntity.badRequest().body(ResponseObject.fail(errors));
+        }
+
         User user = userService.signUp(signupDto);
         return ResponseEntity.ok().body(ResponseObject.of(200,user));
     }
 
     @PostMapping("/login")
-    public ResponseEntity<TokenDto> login(@RequestBody @Valid LoginDto loginDto) {
+    public ResponseEntity<ResponseObject> login(@RequestBody @Valid LoginDto loginDto) {
+        TokenDto tokenDto = userService.login(loginDto);
 
-        return ResponseEntity.ok().build();
+        HttpHeaders httpHeaders = new HttpHeaders();
+        httpHeaders.add(JwtFilter.AUTHORIZATION_HEADER, "Bearer " + tokenDto.getToken());
+
+        return ResponseEntity.ok().headers(httpHeaders).body(ResponseObject.ok(tokenDto));
     }
 
 }

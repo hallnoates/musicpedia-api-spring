@@ -1,6 +1,7 @@
 package org.mozza.musicpediaapi.application.config;
 
 import lombok.RequiredArgsConstructor;
+import org.mozza.musicpediaapi.api.user.domain.Role;
 import org.mozza.musicpediaapi.application.jwt.JwtAccessDeniedHandler;
 import org.mozza.musicpediaapi.application.jwt.JwtAuthenticationEntryPoint;
 import org.mozza.musicpediaapi.application.jwt.JwtSecurityConfig;
@@ -20,6 +21,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     private final TokenProvider tokenProvider;
     private final JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
     private final JwtAccessDeniedHandler jwtAccessDeniedHandler;
+
 
     @Bean
     public PasswordEncoder passwordEncoder() {
@@ -54,6 +56,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .authorizeRequests()
                 .antMatchers("/sign-up").permitAll()
                 .antMatchers("/login").permitAll()
+                .antMatchers("/users/**").hasAuthority(String.valueOf(Role.ADMIN))
                 .anyRequest().authenticated()
 
                 .and()
